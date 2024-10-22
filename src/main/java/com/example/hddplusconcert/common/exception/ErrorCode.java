@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
     // 토큰 관련 오류
     INVALID_TOKEN("Invalid token"),
+    SERVER_ERROR("Server error"),
 
     // 잔액 관련 오류
     INSUFFICIENT_BALANCE("Insufficient balance"),

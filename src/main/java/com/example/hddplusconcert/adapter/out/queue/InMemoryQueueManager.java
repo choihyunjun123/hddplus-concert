@@ -35,7 +35,7 @@ public class InMemoryQueueManager implements QueueManager {
     }
 
     @Override
-    public String peekNextUser() {
-        return "";
+    public boolean isUserFirstInQueue(String id) {
+        return !queue.isEmpty() && queue.peek().equals(id);
     }
 }

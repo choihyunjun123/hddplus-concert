@@ -4,9 +4,9 @@ import com.example.hddplusconcert.application.port.out.SeatRepository;
 import com.example.hddplusconcert.domain.model.Seat;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class SeatRepositoryImpl implements SeatRepository {
@@ -35,5 +35,13 @@ public class SeatRepositoryImpl implements SeatRepository {
                 .map(SeatEntity::fromDomainModel)
                 .toList();
         repository.saveAll(seatEntities);
+    }
+
+    @Override
+    public List<Seat> findAllByStatusAndHeldUntilBefore(Seat.SeatStatus status, LocalDateTime date) {
+        List<SeatEntity> expiredSeats = repository.findAllByStatusAndHeldUntilBefore(status, date);
+        return expiredSeats.stream()
+                .map(SeatEntity::toDomainModel)
+                .toList();
     }
 }

@@ -18,9 +18,8 @@ public class JwtTokenProvider implements TokenProvider {
     private final long VALIDITY_IN_MS = 3600000; // 토큰의 유효시간(1시간)
 
     @Override
-    public String generateToken(String id, Long queuePosition) {
+    public String generateToken(String id) {
         Claims claims = Jwts.claims().setSubject(id);
-        claims.put("queuePosition", queuePosition);
         Date now = new Date();
         Date validity = new Date(now.getTime() + VALIDITY_IN_MS);
 
@@ -52,13 +51,13 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public String getUserIdFromToken(String token) {
+    public String getIdFromToken(String token) {
         Key secretKey = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
 
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }

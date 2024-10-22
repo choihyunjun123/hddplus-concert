@@ -26,8 +26,11 @@ public class AuthController {
 
     // 대기열 위치 조회
     @GetMapping("/queue")
-    public ResponseEntity<QueuePositionResponse> getQueuePosition(@RequestParam String userId) {
+    public ResponseEntity<?> getQueuePosition(@RequestParam String userId) {
         Long position = authUseCase.getQueuePosition(userId);
+        if (position == -1L) {
+            return ResponseEntity.ok("Not in queue position");
+        }
         return ResponseEntity.ok(new QueuePositionResponse(userId, position));
     }
 }

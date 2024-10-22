@@ -11,6 +11,6 @@ public interface QueueManager {
     // 유저의 대기열 조회
     Long getPosition(String id);
 
-    // 대기열에서 다음 유저를 확인
-    String peekNextUser();
+    // 대기열에서 처음인지 확인
+    boolean isUserFirstInQueue(String id);
 }

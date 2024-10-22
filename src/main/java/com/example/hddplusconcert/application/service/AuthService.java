@@ -25,9 +25,10 @@ public class AuthService implements AuthUseCase {
     @Override
     public String generateToken(String userId) {
         User user = getUserByUserId(userId);
+
         queueManager.enqueue(user.getId().toString());
-        Long position = queueManager.getPosition(user.getId().toString());
-        return tokenProvider.generateToken(userId, position);
+
+        return tokenProvider.generateToken(user.getId().toString());
     }
 
     @Override
@@ -41,12 +42,16 @@ public class AuthService implements AuthUseCase {
         User user = getUserByUserId(userId);
 
         if (!tokenProvider.validateToken(token)) {
+            queueManager.dequeue(user.getId().toString());
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
-        Long position = queueManager.getPosition(user.getId().toString());
-        if (position != 1L) {
-            throw new CustomException(ErrorCode.USER_NOT_IN_TURN);
+        String tokenUserId = tokenProvider.getIdFromToken(token);
+
+        // 토큰의 사용자 ID와 요청의 사용자 ID가 일치하는지 검증
+        if (!tokenUserId.equals(user.getId().toString())) {
+            queueManager.dequeue(tokenUserId);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
 

@@ -51,7 +51,7 @@ public class SeatController {
             token = token.substring(7);  // "Bearer " 이후의 실제 토큰 부분 추출
         }
         // 대기열 순서와 토큰 검증
-        authUseCase.validateTokenAndQueuePosition(token, seatRequest.getUserId());
+        authUseCase.validateAccessRights(token, seatRequest.getUserId());
 
         Seat seat = seatUseCase.reserveSeat(
                 seatRequest.getUserId(),

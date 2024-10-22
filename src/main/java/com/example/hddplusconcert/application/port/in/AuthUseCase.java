@@ -10,5 +10,5 @@ public interface AuthUseCase {
     Long getQueuePosition(String userId);
 
     // 토큰 검증 및 순번 조회
-    void validateTokenAndQueuePosition(String token, String userId);
+    void validateAccessRights(String token, String userId);
 }

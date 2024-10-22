@@ -1,4 +1,4 @@
-package com.example.hddplusconcert.common.dto;
+package com.example.hddplusconcert.common.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

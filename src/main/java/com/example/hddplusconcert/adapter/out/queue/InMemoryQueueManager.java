@@ -13,20 +13,20 @@ public class InMemoryQueueManager implements QueueManager {
     private final Queue<String> queue = new LinkedList<>();
 
     @Override
-    public void enqueue(String userId) {
-        queue.add(userId);
+    public void enqueue(String id) {
+        queue.add(id);
     }
 
     @Override
-    public void dequeue(String userId) {
-        queue.remove(userId);
+    public void dequeue(String id) {
+        queue.remove(id);
     }
 
     @Override
-    public Long getPosition(String userId) {
+    public Long getPosition(String id) {
         long position = 1;
-        for (String id : queue) {
-            if (id.equals(userId)) {
+        for (String UUID : queue) {
+            if (UUID.equals(id)) {
                 return position;
             }
             position++;

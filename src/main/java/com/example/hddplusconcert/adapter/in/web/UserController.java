@@ -21,15 +21,16 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequest userRequest) {
-        userUseCase.register(userRequest.userId());
-        return ResponseEntity.ok("Register success");
+    public ResponseEntity<UserResponse> register(@RequestBody UserRequest userRequest) {
+        User user = userUseCase.register(userRequest.userId());
+        UserResponse response = UserResponse.fromDomainModel(user);
+        return ResponseEntity.ok(response);
     }
 
     // 회원 찾기
     @PostMapping("/find")
     public ResponseEntity<UserResponse> find(@RequestBody UserRequest userRequest) {
-        User user = userUseCase.findById(userRequest.userId());
+        User user = userUseCase.findByUserId(userRequest.userId());
         UserResponse response = UserResponse.fromDomainModel(user);
         return ResponseEntity.ok(response);
     }

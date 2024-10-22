@@ -1,9 +1,9 @@
 package com.example.hddplusconcert.adapter.in.web;
 
 import com.example.hddplusconcert.application.port.in.AuthUseCase;
-import com.example.hddplusconcert.common.dto.AuthRequest;
-import com.example.hddplusconcert.common.dto.AuthResponse;
-import com.example.hddplusconcert.common.dto.user.UserRequest;
+import com.example.hddplusconcert.common.dto.auth.AuthRequest;
+import com.example.hddplusconcert.common.dto.auth.AuthResponse;
+import com.example.hddplusconcert.common.dto.auth.QueuePositionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +26,8 @@ public class AuthController {
 
     // 대기열 위치 조회
     @GetMapping("/queue")
-    public ResponseEntity<?> getQueuePosition(@RequestParam String userId) {
+    public ResponseEntity<QueuePositionResponse> getQueuePosition(@RequestParam String userId) {
         Long position = authUseCase.getQueuePosition(userId);
-        return ResponseEntity.ok("Your position is: " + position);
+        return ResponseEntity.ok(new QueuePositionResponse(userId, position));
     }
 }

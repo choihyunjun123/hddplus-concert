@@ -18,14 +18,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(String userId) {
-        return repository.findById(userId)
+    public Optional<User> findByUserId(String userId) {
+        return repository.findByUserId(userId)
                 .map(UserEntity::toDomainModel);
     }
 
     @Override
-    public void save(User user) {
-        repository.save(UserEntity.fromDomainModel(user));
+    public User save(User user) {
+        UserEntity savedEntity = repository.save(UserEntity.fromDomainModel(user));
+        return savedEntity.toDomainModel();
     }
 
     @Override

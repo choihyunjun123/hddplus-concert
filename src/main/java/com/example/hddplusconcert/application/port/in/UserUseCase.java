@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface UserUseCase {
     // 회원가입
-    void register(String userId);
+    User register(String userId);
 
-    User findById(String userId);
+    User findByUserId(String userId);
 
     List<User> findAll();
 }

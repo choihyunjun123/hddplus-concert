@@ -18,8 +18,8 @@ public class JwtTokenProvider implements TokenProvider {
     private final long VALIDITY_IN_MS = 3600000; // 토큰의 유효시간(1시간)
 
     @Override
-    public String generateToken(String userId, Long queuePosition) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    public String generateToken(String id, Long queuePosition) {
+        Claims claims = Jwts.claims().setSubject(id);
         claims.put("queuePosition", queuePosition);
         Date now = new Date();
         Date validity = new Date(now.getTime() + VALIDITY_IN_MS);

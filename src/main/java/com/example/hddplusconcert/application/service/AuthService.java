@@ -6,6 +6,7 @@ import com.example.hddplusconcert.application.port.out.TokenProvider;
 import com.example.hddplusconcert.application.port.out.UserRepository;
 import com.example.hddplusconcert.common.exception.CustomException;
 import com.example.hddplusconcert.common.exception.ErrorCode;
+import com.example.hddplusconcert.domain.model.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,32 +24,34 @@ public class AuthService implements AuthUseCase {
 
     @Override
     public String generateToken(String userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        queueManager.enqueue(userId);
-        Long position = queueManager.getPosition(userId);
+        User user = getUserByUserId(userId);
+        queueManager.enqueue(user.getId().toString());
+        Long position = queueManager.getPosition(user.getId().toString());
         return tokenProvider.generateToken(userId, position);
     }
 
     @Override
     public Long getQueuePosition(String userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        return queueManager.getPosition(userId);
+        User user = getUserByUserId(userId);
+        return queueManager.getPosition(user.getId().toString());
     }
 
     @Override
-    public void validateTokenAndQueuePosition(String token, String userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public void validateAccessRights(String token, String userId) {
+        User user = getUserByUserId(userId);
 
         if (!tokenProvider.validateToken(token)) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
-        Long queuePosition = queueManager.getPosition(userId);
-        if (queuePosition != 1L) {
+        Long position = queueManager.getPosition(user.getId().toString());
+        if (position != 1L) {
             throw new CustomException(ErrorCode.USER_NOT_IN_TURN);
         }
+    }
+
+    private User getUserByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }

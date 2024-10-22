@@ -19,18 +19,18 @@ public class UserService implements UserUseCase {
     }
 
     @Override
-    public void register(String userId) {
-        userRepository.findById(userId)
-                .ifPresent(user -> {
-                    throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
-                });
+    public User register(String userId) {
+        if (userRepository.findByUserId(userId).isPresent()) {
+            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
+        }
         User newUser = User.createNewUser(userId);
         userRepository.save(newUser);
+        return newUser;
     }
 
     @Override
-    public User findById(String userId) {
-        return userRepository.findById(userId)
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 

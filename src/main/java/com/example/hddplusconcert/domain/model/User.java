@@ -6,18 +6,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+    private UUID id;
     private String userId;
     private BigDecimal balance;
 
     // 회원가입
     public static User createNewUser(String userId) {
-        return new User(userId, new BigDecimal(0));
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        return new User(UUID.randomUUID(), userId, BigDecimal.ZERO);
     }
 
     // 잔액 충전

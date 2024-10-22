@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -26,20 +25,22 @@ public class ConcertService implements ConcertUseCase {
     }
 
     @Override
-    public void registerConcert(Concert concert) {
-        concertRepository.findByConcertNameAndConcertDate(concert.getConcertName(), concert.getConcertDate())
-                .ifPresent(existingConcert -> {
-                    throw new CustomException(ErrorCode.CONCERT_ALREADY_EXIST);
-                });
+    public Concert registerConcert(Concert concert) {
+        if (concertRepository.findByConcertNameAndConcertDate(concert.getConcertName(), concert.getConcertDate()).isPresent()) {
+            throw new CustomException(ErrorCode.CONCERT_ALREADY_EXIST);
+        }
+
         Concert savedConcert = concertRepository.save(concert);
-        List<Seat> seats = IntStream.range(0, savedConcert.getAvailableSeats())
+
+        List<Seat> seats = IntStream.range(1, savedConcert.getAvailableSeats())
                 .mapToObj(i -> new Seat(
-                        (long) i + 1,
+                        (long) i,
                         savedConcert.getConcertId()
                 ))
                 .toList();
-        seatRepository.saveAll(seats);
 
+        seatRepository.saveAll(seats);
+        return savedConcert;
     }
 
     @Override

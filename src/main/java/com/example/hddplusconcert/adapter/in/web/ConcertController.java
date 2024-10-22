@@ -23,14 +23,15 @@ public class ConcertController {
 
     // 콘서트 등록
     @PostMapping("/register")
-    public ResponseEntity<?> registerConcert(@RequestBody ConcertRegisterRequest request) {
-        concertUseCase.registerConcert(request.toDomainModel());
-        return ResponseEntity.ok("Concert registered successfully.");
+    public ResponseEntity<ConcertResponse> registerConcert(@RequestBody ConcertRegisterRequest request) {
+        Concert concert = concertUseCase.registerConcert(request.toDomainModel());
+        ConcertResponse response = ConcertResponse.fromDomainModel(concert);
+        return ResponseEntity.ok(response);
     }
 
     // 모든 콘서트 목록의 조회
     @GetMapping
-    public ResponseEntity<List<ConcertResponse>> getAllConcert(@RequestParam(required = false) LocalDateTime concertDate) {
+    public ResponseEntity<List<ConcertResponse>> allConcerts() {
         List<Concert> concerts = concertUseCase.getAllConcerts();
         List<ConcertResponse> responses = concerts.stream()
                 .map(ConcertResponse::fromDomainModel)
@@ -40,7 +41,7 @@ public class ConcertController {
 
     // 콘서트의 예약 가능한 날짜 조회
     @GetMapping("/available")
-    public ResponseEntity<List<ConcertResponse>> getAvailableDates(
+    public ResponseEntity<List<ConcertResponse>> availableConcerts(
             @RequestParam String concertName,
             @RequestParam(required = false) LocalDateTime concertDate) {
         LocalDateTime date = concertDate == null ? LocalDateTime.now() : concertDate;

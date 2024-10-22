@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ConcertUseCase {
-    void registerConcert(Concert concert);
+    Concert registerConcert(Concert concert);
     List<Concert> getAllConcerts();
     List<Concert> getConcertsAvailable(String concertName, LocalDateTime concertDate);
     Concert getConcertByConcertNameAndDate(String concertName, LocalDateTime concertDate);

@@ -57,6 +57,9 @@ public class SeatService implements SeatUseCase {
 
     @Override
     public Seat reserveSeat(String userId, Long seatNumber, Long concertId) {
+        userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         Seat seat = seatRepository.findBySeatNumberAndConcertId(seatNumber, concertId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SEAT_NOT_FOUND));
 

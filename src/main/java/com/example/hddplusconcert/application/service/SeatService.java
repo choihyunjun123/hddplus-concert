@@ -44,9 +44,14 @@ public class SeatService implements SeatUseCase {
             return queueManager.getPosition(user.getId().toString());
         }
 
-        seat.hold(userId, LocalDateTime.now().plusMinutes(5));
-        seatRepository.save(seat);
-        queueManager.dequeue(user.getId().toString());
+        try {
+            seat.hold(userId, LocalDateTime.now().plusMinutes(5));
+            seatRepository.save(seat);
+            queueManager.dequeue(user.getId().toString());
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SEAT_RESERVATION_FAILED);
+        }
+
         return 1L;
     }
 

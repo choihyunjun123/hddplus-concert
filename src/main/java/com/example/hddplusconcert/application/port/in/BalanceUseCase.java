@@ -1,11 +1,10 @@
 package com.example.hddplusconcert.application.port.in;
 
+import com.example.hddplusconcert.domain.model.User;
+
 import java.math.BigDecimal;
 
 public interface BalanceUseCase {
     // 잔액 충전
-    void rechargeBalance(String userId, BigDecimal amount);
-
-    // 잔액 조회
-    BigDecimal getBalance(String userId);
+    User chargeBalance(String userId, BigDecimal amount);
 }

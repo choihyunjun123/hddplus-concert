@@ -19,17 +19,11 @@ public class BalanceService implements BalanceUseCase {
     }
 
     @Override
-    public void rechargeBalance(String userId, BigDecimal amount) {
-        User user = userRepository.findById(userId)
+    public User chargeBalance(String userId, BigDecimal amount) {
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.addBalance(amount);
         userRepository.save(user);
-    }
-
-    @Override
-    public BigDecimal getBalance(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
-                .getBalance();
+        return user;
     }
 }

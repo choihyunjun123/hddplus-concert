@@ -16,5 +16,5 @@ public class Concert {
     private String concertName;
     private LocalDateTime concertDate;
     private String location;
-    private int availableSeats;
+    private Integer availableSeats;
 }

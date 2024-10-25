@@ -1,7 +1,6 @@
 package com.example.hddplusconcert.adapter.in.web;
 
 import com.example.hddplusconcert.application.port.in.AuthUseCase;
-import com.example.hddplusconcert.common.dto.auth.AuthRequest;
 import com.example.hddplusconcert.common.dto.auth.AuthResponse;
 import com.example.hddplusconcert.common.dto.auth.QueuePositionResponse;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +18,24 @@ public class AuthController {
 
     // 토큰 발급 API
     @PostMapping("/token")
-    public ResponseEntity<AuthResponse> getToken(@RequestBody AuthRequest authRequest) {
-        String token = authUseCase.generateToken(authRequest.getUserId());
-        return ResponseEntity.ok(new AuthResponse(token));
+    public ResponseEntity<AuthResponse> getToken(
+            @RequestHeader("userId") String userId
+    ) {
+        String token = authUseCase.generateToken(userId);
+        AuthResponse response = AuthResponse.fromDomainModel(token);
+        return ResponseEntity.ok(response);
     }
 
     // 대기열 위치 조회
     @GetMapping("/queue")
-    public ResponseEntity<?> getQueuePosition(@RequestParam String userId) {
+    public ResponseEntity<?> getQueuePosition(
+            @RequestHeader("userId") String userId
+    ) {
         Long position = authUseCase.getQueuePosition(userId);
         if (position == -1L) {
             return ResponseEntity.ok("Not in queue position");
         }
-        return ResponseEntity.ok(new QueuePositionResponse(userId, position));
+        QueuePositionResponse response = QueuePositionResponse.fromDomainModel(userId, position);
+        return ResponseEntity.ok(response);
     }
 }

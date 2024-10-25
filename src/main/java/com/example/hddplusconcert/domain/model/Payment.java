@@ -16,11 +16,11 @@ public class Payment {
     private Long paymentId;
     private String userId;
     private Long seatNumber;
-    private String concertId;
+    private Long concertId;
     private BigDecimal amount;
     private LocalDateTime paymentTime;
 
-    public Payment(String userId, Long seatNumber, String concertId, BigDecimal amount) {
+    public Payment(String userId, Long seatNumber, Long concertId, BigDecimal amount) {
         this.userId = userId;
         this.seatNumber = seatNumber;
         this.concertId = concertId;

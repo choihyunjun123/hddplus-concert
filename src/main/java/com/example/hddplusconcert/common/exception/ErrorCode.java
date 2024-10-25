@@ -15,6 +15,7 @@ public enum ErrorCode {
     SEAT_NOT_AVAILABLE("Seat not available"),
     SEAT_NOT_HELD_BY_USER("Seat is not held by the user"),
     SEAT_NOT_FOUND("Seat not found"),
+    SEAT_RESERVATION_FAILED("Seat reservation failed"),
 
     // 유저 관련 오류
     USER_NOT_FOUND("User not found"),

@@ -1,7 +1,9 @@
 package com.example.hddplusconcert.application.port.in;
 
+import com.example.hddplusconcert.domain.model.Payment;
+
 import java.math.BigDecimal;
 
 public interface PaymentUseCase {
-    boolean makePayment(String userId, Long seatNumber, String concertId, BigDecimal amount);
+    Payment makePayment(String userId, Long seatNumber, Long concertId, BigDecimal amount);
 }

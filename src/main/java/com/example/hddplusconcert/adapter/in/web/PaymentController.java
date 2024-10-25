@@ -1,7 +1,9 @@
 package com.example.hddplusconcert.adapter.in.web;
 
 import com.example.hddplusconcert.application.port.in.PaymentUseCase;
-import com.example.hddplusconcert.common.dto.PaymentRequest;
+import com.example.hddplusconcert.common.dto.payment.PaymentRequest;
+import com.example.hddplusconcert.common.dto.payment.PaymentResponse;
+import com.example.hddplusconcert.domain.model.Payment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,17 +19,16 @@ public class PaymentController {
 
     // 결제 처리
     @PostMapping("/create")
-    public ResponseEntity<String> makePayment(@RequestBody PaymentRequest paymentRequest) {
-        boolean success = paymentUseCase.makePayment(
-                paymentRequest.getUserId(),
-                paymentRequest.getSeatNumber(),
-                paymentRequest.getConcertId(),
-                paymentRequest.getAmount()
+    public ResponseEntity<PaymentResponse> makePayment(
+            @RequestHeader("userId") String userId,
+            @RequestBody PaymentRequest paymentRequest) {
+        Payment payment = paymentUseCase.makePayment(
+                userId,
+                paymentRequest.seatNumber(),
+                paymentRequest.concertId(),
+                paymentRequest.amount()
         );
-        if (success) {
-            return ResponseEntity.ok("Payment Successful.");
-        } else {
-            return ResponseEntity.status(400).body("Payment Failed.");
-        }
+        PaymentResponse response = PaymentResponse.fromDomainModel(payment);
+        return ResponseEntity.ok(response);
     }
 }

@@ -24,7 +24,7 @@ public class ConcertEntity {
     private String concertName;
     private LocalDateTime concertDate;
     private String location;
-    private int availableSeats;
+    private Integer availableSeats;
 
     public Concert toDomainModel() {
         Concert concert = new Concert();

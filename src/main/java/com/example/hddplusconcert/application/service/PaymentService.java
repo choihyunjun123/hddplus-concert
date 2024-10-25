@@ -4,6 +4,11 @@ import com.example.hddplusconcert.application.port.in.PaymentUseCase;
 import com.example.hddplusconcert.application.port.out.PaymentRepository;
 import com.example.hddplusconcert.application.port.out.SeatRepository;
 import com.example.hddplusconcert.application.port.out.UserRepository;
+import com.example.hddplusconcert.common.exception.CustomException;
+import com.example.hddplusconcert.common.exception.ErrorCode;
+import com.example.hddplusconcert.domain.model.Payment;
+import com.example.hddplusconcert.domain.model.Seat;
+import com.example.hddplusconcert.domain.model.User;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,7 +30,26 @@ public class PaymentService implements PaymentUseCase {
     }
 
     @Override
-    public boolean makePayment(String userId, Long seatNumber, String concertId, BigDecimal amount) {
-        return false;
+    public Payment makePayment(String userId, Long seatNumber, Long concertId, BigDecimal amount) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Seat seat = seatRepository.findBySeatNumberAndConcertId(seatNumber, concertId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CONCERT_NOT_FOUND));
+
+        if (!seat.isHeldBy(userId)) {
+            throw new CustomException(ErrorCode.SEAT_NOT_HELD_BY_USER);
+        }
+
+        user.deductBalance(amount);
+        userRepository.save(user);
+
+        seat.reserve(userId);
+        seatRepository.save(seat);
+
+        Payment payment = new Payment(userId, seatNumber, concertId, amount);
+        paymentRepository.save(payment);
+
+        return payment;
     }
 }

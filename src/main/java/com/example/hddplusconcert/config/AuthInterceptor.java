@@ -1,6 +1,8 @@
 package com.example.hddplusconcert.config;
 
 import com.example.hddplusconcert.application.port.in.AuthUseCase;
+import com.example.hddplusconcert.common.exception.CustomException;
+import com.example.hddplusconcert.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;

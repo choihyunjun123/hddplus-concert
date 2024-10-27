@@ -32,7 +32,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> findAll() {
         return repository.findAll()
-                .stream().map(UserEntity::toDomainModel)
+                .stream()
+                .map(UserEntity::toDomainModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countByUserId(String userId) {
+        return repository.countByUserId(userId);
     }
 }

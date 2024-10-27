@@ -6,6 +6,7 @@ import com.example.hddplusconcert.common.exception.CustomException;
 import com.example.hddplusconcert.common.exception.ErrorCode;
 import com.example.hddplusconcert.domain.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class UserService implements UserUseCase {
     }
 
     @Override
+    @Transactional
     public User register(String userId) {
         if (userRepository.findByUserId(userId).isPresent()) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);

@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, String> {
     Optional<UserEntity> findByUserId(String userId);
+
+    long countByUserId(String userId);
 }

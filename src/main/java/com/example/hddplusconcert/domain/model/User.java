@@ -1,5 +1,7 @@
 package com.example.hddplusconcert.domain.model;
 
+import com.example.hddplusconcert.common.exception.CustomException;
+import com.example.hddplusconcert.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ public class User {
     // 잔액 충전
     public void addBalance(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount must be positive");
+            throw new CustomException(ErrorCode.NEGATIVE_BALANCE);
         }
         this.balance = this.balance.add(amount);
     }
@@ -36,10 +38,10 @@ public class User {
     // 잔액 차감
     public void deductBalance(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount must be positive");
+            throw new CustomException(ErrorCode.NEGATIVE_BALANCE);
         }
         if (!hasSufficientBalance(amount)) {
-            throw new IllegalArgumentException("Insufficient balance");
+            throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE);
         }
         this.balance = this.balance.subtract(amount);
     }

@@ -1,11 +1,10 @@
 package com.example.hddplusconcert.adapter.out.persistence;
 
 import com.example.hddplusconcert.domain.model.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,11 +23,17 @@ public class UserEntity {
     @Id
     private UUID id;
 
-    @Column(nullable = true)
+    @Column(nullable = false, unique = true)
+    @NotNull
+    @NotBlank
     private String userId;
 
+    @Column(nullable = false)
     @Min(0)
     private BigDecimal balance;
+
+    @Version
+    private Long version; // 낙관적 락을 위한 버전 필드
 
     public User toDomainModel() {
         User user = new User();

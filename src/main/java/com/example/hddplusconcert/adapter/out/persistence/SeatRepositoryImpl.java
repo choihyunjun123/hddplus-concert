@@ -39,8 +39,8 @@ public class SeatRepositoryImpl implements SeatRepository {
 
     @Override
     public List<Seat> findAllByStatusAndHeldUntilBefore(Seat.SeatStatus status, LocalDateTime date) {
-        List<SeatEntity> expiredSeats = repository.findAllByStatusAndHeldUntilBefore(status, date);
-        return expiredSeats.stream()
+        return repository.findAllByStatusAndHeldUntilBefore(status, date)
+                .stream()
                 .map(SeatEntity::toDomainModel)
                 .toList();
     }

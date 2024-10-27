@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     // 잔액 관련 오류
     INSUFFICIENT_BALANCE("Insufficient balance"),
+    NEGATIVE_BALANCE("Balance must be positive"),
 
     // 좌석 관련 오류
     SEAT_NOT_AVAILABLE("Seat not available"),

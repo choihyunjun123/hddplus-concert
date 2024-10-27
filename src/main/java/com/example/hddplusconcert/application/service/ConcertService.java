@@ -8,6 +8,7 @@ import com.example.hddplusconcert.common.exception.ErrorCode;
 import com.example.hddplusconcert.domain.model.Concert;
 import com.example.hddplusconcert.domain.model.Seat;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ConcertService implements ConcertUseCase {
     }
 
     @Override
+    @Transactional
     public Concert registerConcert(Concert concert) {
         if (concertRepository.findByConcertNameAndConcertDate(concert.getConcertName(), concert.getConcertDate()).isPresent()) {
             throw new CustomException(ErrorCode.CONCERT_ALREADY_EXIST);
@@ -40,6 +42,7 @@ public class ConcertService implements ConcertUseCase {
                 .toList();
 
         seatRepository.saveAll(seats);
+
         return savedConcert;
     }
 

@@ -10,6 +10,7 @@ import com.example.hddplusconcert.domain.model.Seat;
 import com.example.hddplusconcert.domain.model.User;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,9 +30,14 @@ public class SeatService implements SeatUseCase {
 
     // 좌석을 임시로 예약
     @Override
+    @Transactional
     public Long holdSeat(String userId, Long seatNumber, Long concertId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!queueManager.isUserFirstInQueue(user.getId().toString())) {
+            return queueManager.getPosition(user.getId().toString());
+        }
 
         Seat seat = seatRepository.findBySeatNumberAndConcertId(seatNumber, concertId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SEAT_NOT_FOUND));
@@ -40,26 +46,18 @@ public class SeatService implements SeatUseCase {
             throw new CustomException(ErrorCode.SEAT_NOT_AVAILABLE);
         }
 
-        if (!queueManager.isUserFirstInQueue(user.getId().toString())) {
-            return queueManager.getPosition(user.getId().toString());
-        }
+        seat.hold(userId, LocalDateTime.now().plusMinutes(5));
 
-        try {
-            seat.hold(userId, LocalDateTime.now().plusMinutes(5));
-            seatRepository.save(seat);
-            queueManager.dequeue(user.getId().toString());
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.SEAT_RESERVATION_FAILED);
-        }
+        seatRepository.save(seat);
+
+        queueManager.dequeue(user.getId().toString());
 
         return 1L;
     }
 
     @Override
+    @Transactional
     public Seat reserveSeat(String userId, Long seatNumber, Long concertId) {
-        userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
         Seat seat = seatRepository.findBySeatNumberAndConcertId(seatNumber, concertId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SEAT_NOT_FOUND));
 
@@ -68,13 +66,17 @@ public class SeatService implements SeatUseCase {
         }
 
         seat.reserve(userId);
+
         seatRepository.save(seat);
+
         return seat;
     }
 
     @Scheduled(fixedRate = 60000)
+    @Transactional
     public void releaseExpiredHolds() {
         List<Seat> expiredSeats = seatRepository.findAllByStatusAndHeldUntilBefore(Seat.SeatStatus.HELD, LocalDateTime.now());
+
         expiredSeats.forEach(seat -> {
             seat.releaseHold();
             seatRepository.save(seat);

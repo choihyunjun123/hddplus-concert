@@ -10,6 +10,7 @@ import com.example.hddplusconcert.domain.model.Payment;
 import com.example.hddplusconcert.domain.model.Seat;
 import com.example.hddplusconcert.domain.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -30,6 +31,7 @@ public class PaymentService implements PaymentUseCase {
     }
 
     @Override
+    @Transactional
     public Payment makePayment(String userId, Long seatNumber, Long concertId, BigDecimal amount) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -42,9 +44,9 @@ public class PaymentService implements PaymentUseCase {
         }
 
         user.deductBalance(amount);
-        userRepository.save(user);
-
         seat.reserve(userId);
+
+        userRepository.save(user);
         seatRepository.save(seat);
 
         Payment payment = new Payment(userId, seatNumber, concertId, amount);

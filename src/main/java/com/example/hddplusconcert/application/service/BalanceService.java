@@ -6,6 +6,7 @@ import com.example.hddplusconcert.common.exception.CustomException;
 import com.example.hddplusconcert.common.exception.ErrorCode;
 import com.example.hddplusconcert.domain.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -19,6 +20,7 @@ public class BalanceService implements BalanceUseCase {
     }
 
     @Override
+    @Transactional
     public User chargeBalance(String userId, BigDecimal amount) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
